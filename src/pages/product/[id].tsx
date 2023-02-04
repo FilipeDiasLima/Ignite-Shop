@@ -1,9 +1,10 @@
+import { useCart } from "@/hooks/useCart";
 import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import { stripe } from "../../lib/stripe";
 import {
@@ -19,6 +20,7 @@ interface ProductProps {
     imageUrl: string;
     price: string;
     description: string;
+    priceUnformatted: number;
     defaultPriceId: string;
   };
 }
@@ -26,26 +28,15 @@ interface ProductProps {
 export default function Product({ product }: ProductProps) {
   // fallback
   const { isFallback } = useRouter();
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false);
 
-  async function handleBuyProduct() {
-    setIsCreatingCheckoutSession(true);
-    try {
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
+  const { cartProducts, handleAddOneToCart } = useCart();
+  const [alreadyAdded, setAlreadyAdded] = useState(false);
 
-      const { checkoutUrl } = response.data;
-
-      // rota interna -> push
-      // rota externa,
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      setIsCreatingCheckoutSession(false);
-      alert("Falha ao redirecionar ao checkout!");
-    }
-  }
+  useEffect(() => {
+    const findProduct = cartProducts.find((item) => item.id === product.id);
+    if (findProduct) setAlreadyAdded(true);
+    else setAlreadyAdded(false);
+  }, [cartProducts]);
 
   return (
     <>
@@ -65,10 +56,10 @@ export default function Product({ product }: ProductProps) {
           <p>{product.description}</p>
 
           <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
+            disabled={alreadyAdded}
+            onClick={() => handleAddOneToCart(product)}
           >
-            Comprar agora
+            {alreadyAdded ? "Produto já adicionado" : "Colocar na sacola"}
           </button>
         </ProductDetails>
       </ProductContainer>
@@ -104,6 +95,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
           style: "currency",
           currency: "BRL",
         }).format(price.unit_amount! / 100),
+        priceUnformatted: price.unit_amount!,
         description: product.description,
         defaultPriceId: price.id,
       },
