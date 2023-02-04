@@ -77,7 +77,7 @@ export const SideBarCart = () => {
         }}
       >
         {cartProducts.map((item) => (
-          <ProductCart>
+          <ProductCart key={item.id}>
             <ImageContainer>
               <Image src={item.imageUrl} width={95} height={95} alt="" />
             </ImageContainer>

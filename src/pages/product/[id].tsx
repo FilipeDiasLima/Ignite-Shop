@@ -30,6 +30,7 @@ export default function Product({ product }: ProductProps) {
   const { isFallback } = useRouter();
 
   const { cartProducts, handleAddOneToCart } = useCart();
+
   const [alreadyAdded, setAlreadyAdded] = useState(false);
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export default function Product({ product }: ProductProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [{ params: { id: "prod_MLH5Wy0Y97hDAC" } }],
+    paths: [],
     fallback: "blocking",
   };
 };

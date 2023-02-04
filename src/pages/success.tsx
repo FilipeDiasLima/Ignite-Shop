@@ -32,8 +32,8 @@ export default function Success({ customerName, productsImage }: Props) {
       </Head>
       <SuccessContainer>
         <ProductsImages>
-          {productsImage.map((image) => (
-            <ImageContainer>
+          {productsImage.map((image, index) => (
+            <ImageContainer key={index}>
               <Image src={image} width={120} height={120} alt="" />
             </ImageContainer>
           ))}
