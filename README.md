@@ -1,6 +1,5 @@
 <div align="center">
-  <h1> IGNITE SHOP </h1>
-   <img src="./src/assets/logo.svg" width="100"/>
+  <img src="./src/assets/logo.svg" width="200"/>
   <h6> Projeto desenvolvido do Desafio 04 do Ignite React JS </h6>
 </div>
 
